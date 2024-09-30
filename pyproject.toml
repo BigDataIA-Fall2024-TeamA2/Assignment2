@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "assignment2"
+version = "0.1.0"
+description = ""
+authors = ["Gopi Krishna <gopigof@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+streamlit = "^1.38.0"
+fastapi = "^0.115.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
