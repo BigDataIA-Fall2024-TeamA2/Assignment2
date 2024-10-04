@@ -1,6 +1,4 @@
 import datetime
-from typing import Any
-from typing_extensions import Self
 
 from pydantic import BaseModel, EmailStr, Field, model_validator
 
@@ -31,5 +29,3 @@ class UserResponse(BaseModel):
     active: bool
     created_at: datetime.datetime
     modified_at: datetime.datetime
-
-

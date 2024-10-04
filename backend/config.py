@@ -4,7 +4,7 @@ from pydantic import model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
-class Settings(BaseSettings):
+class Settings(BaseSettings, extra="ignore"):
     # Postgres DB
     POSTGRES_CONN_STRING: str
     POSTGRES_HOSTNAME: str
@@ -20,12 +20,18 @@ class Settings(BaseSettings):
     OPENAI_VECTOR_STORE_ID: str
 
     # Authentication
-    JWT_TOKEN_EXPIRATION_DURATION: 60 * 60 * 3 # 3 hours
+    JWT_ACCESS_TOKEN_EXPIRATION_SECONDS: int = 60 * 60 * 3  # 3 hours
+    JWT_REFRESH_TOKEN_EXPIRATION_SECONDS: int = 60 * 60 * 24 * 1  # 1 day
+    JWT_ALGORITHM: str = "HS256"
     JWT_SECRET_KEY: str
+
+    # Fast API config
+    APP_TITLE: str = "QA & Summarization Interface"
+    APP_VERSION: str = "0.1"
 
     model_config = SettingsConfigDict(env_file=".env")
 
-    @model_validator
+    @model_validator(mode="after")
     def validator(cls, values: "Settings") -> "Settings":
         values.POSTGRES_URI = f"{values.POSTGRES_USER}:{values.POSTGRES_PASSWORD}@{values.POSTGRES_HOSTNAME}:{values.POSTGRES_PORT}/{values.POSTGRES_DB}"
         return values

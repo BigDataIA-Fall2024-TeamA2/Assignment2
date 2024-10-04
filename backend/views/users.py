@@ -18,13 +18,13 @@ users_router = APIRouter(prefix="/users")
 async def create_user(user: UserRequest, db: AsyncSession = Depends(db_session)) -> UserResponse | HTTPException:
     if created_user := await _create_user(user=user, db_session=db):
         return created_user
-    return HTTPException(
+    raise HTTPException(
         status_code=status.HTTP_409_CONFLICT,
         detail=f"User `{user.username}` already exists"
     )
 
-@users_router.get("/", response_model=UserResponse, responses={status.HTTP_401_UNAUTHORIZED: {"model": ExceptionSchema}})
+
+@users_router.get("/", response_model=UserResponse,
+                  responses={status.HTTP_401_UNAUTHORIZED: {"model": ExceptionSchema}})
 async def get_user(user) -> UserResponse:
     return await ...
-
-
