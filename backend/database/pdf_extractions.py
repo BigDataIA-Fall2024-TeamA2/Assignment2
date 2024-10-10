@@ -4,6 +4,7 @@ from sqlalchemy import Column, String, Integer, func, TIMESTAMP, VARCHAR, DateTi
 
 from backend.database import Base
 
+from backend.database import db_session
 
 # class PdfExtractions(Base):
 #     __tablename__ = 'pdf_extractions'
@@ -28,3 +29,24 @@ class PdfExtractions(Base):
     extraction_status = Column(name="extraction_status", type_=String(20), nullable=False)
     created_at = Column(name="created_at", type_=DateTime, default=datetime.now())
     modified_at = Column(name="modified_at", type_=DateTime, default=datetime.now(), onupdate=datetime.now())
+
+
+# Function to create a new PDF extraction record
+def create_pdf_extraction(filename: str, s3_bucket: str, s3_key: str, extraction_status: str, s3_media_key: str = None):
+    with db_session() as session:
+        new_extraction = PdfExtractions(
+            filename=filename,
+            s3_bucket=s3_bucket,
+            s3_key=s3_key,
+            extraction_status=extraction_status,
+            s3_media_key=s3_media_key,
+        )
+        session.add(new_extraction)
+        session.commit()
+        return new_extraction
+    
+# Function to fetch PDF extraction data from the database
+def fetch_pdf_extractions():
+    with db_session() as session:
+        extractions = session.query(PdfExtractions).all()
+        return extractions
