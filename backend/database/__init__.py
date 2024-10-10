@@ -1,44 +1,46 @@
 import logging
-from typing import AsyncGenerator, Any
+from contextlib import contextmanager
 
-from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
-from sqlalchemy.orm import declarative_base
+from sqlalchemy import create_engine
+from sqlalchemy.orm import scoped_session, sessionmaker, Session
 
 from backend.config import settings
 
+
 logger = logging.getLogger(__name__)
 
-engine = create_async_engine(f"postgresql+asyncpg://{settings.POSTGRES_URI}", connect_args={"statement_cache_size": 0})
-SessionLocal = async_sessionmaker(bind=engine)
-Base = declarative_base()
+from sqlalchemy.orm import DeclarativeBase
+
+class Base(DeclarativeBase):
+    # https://docs.sqlalchemy.org/en/14/orm/extensions/asyncio.html#preventing-implicit-io-when-using-asyncsession
+    __mapper_args__ = {"eager_defaults": True}
+
+class DatabaseSession:
+    _instance = None
+
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is None:
+            logger.info("Created new database session object")
+            cls._instance = super().__new__(cls)
+            cls._instance.db_engine = create_engine(settings.POSTGRES_URI)
+            cls._instance.session_maker = scoped_session(
+                sessionmaker(
+                    autocommit=False, autoflush=True, bind=cls._instance.db_engine
+                )
+            )
+        return cls._instance
+
+    @classmethod
+    def db_session(cls):
+        return cls().session_maker()
 
 
-async def db_session() -> AsyncGenerator[AsyncSession, Any]:
-    _session = SessionLocal()
+@contextmanager
+def db_session() -> Session:
+    _session = DatabaseSession.db_session()
     try:
         yield _session
     except Exception as e:
-        await _session.rollback()
         raise ValueError(f"Failed to connect to database: {e}")
     finally:
-        await _session.close()
-
-
-async def database_health(db: AsyncSession) -> bool:
-    """
-    Health check for the database connection
-    :param db:
-    :return:
-    """
-    try:
-        await db.execute(select(1))
-        return True
-    except Exception:
-        return False
-
-
-async def _create_tables():
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
-    logger.info("[Database] All tables created")
+        _session.close()

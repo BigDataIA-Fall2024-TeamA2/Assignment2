@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 
 
 class User(Base):
-    __tablename__ = "user"
+    __tablename__ = "users"
 
     id = Column(name="id", type_=Integer, primary_key=True, autoincrement=True, )
     username = Column(name="username", type_=String, unique=True, index=True)

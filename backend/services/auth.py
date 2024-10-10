@@ -5,6 +5,7 @@ from fastapi import HTTPException, status
 from jose import jwt
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import Session
 
 from backend.config import settings
 from backend.database.users import User
@@ -12,8 +13,8 @@ from backend.schemas.auth import Token
 from backend.utils import verify_password
 
 
-async def authenticate_user(username: str, password: str, db: AsyncSession) -> Optional[User]:
-    user = await db.scalar(select(User).filter_by(username=username))
+async def authenticate_user(username: str, password: str, db: Session) -> Optional[User]:
+    user = db.scalar(select(User).filter_by(username=username))
     if user and verify_password(plain_password=password, hashed_password=user.password):
         return await validate_user(user=user)
     return None
@@ -43,5 +44,5 @@ async def generate_token(user: User) -> Token:
     return Token(access_token=access_token, refresh_token=refresh_token)
 
 
-async def authenticate_refresh_token(token: str, db: AsyncSession) -> Token:
+async def authenticate_refresh_token(token: str, db: Session) -> Token:
     ...

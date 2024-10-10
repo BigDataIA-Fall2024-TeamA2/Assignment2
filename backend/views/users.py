@@ -1,6 +1,7 @@
 from fastapi import APIRouter, status, HTTPException
 from fastapi.params import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import Session
 
 from backend.database import db_session
 from backend.schemas import ExceptionSchema
@@ -15,7 +16,7 @@ users_router = APIRouter(prefix="/users")
                    responses={status.HTTP_409_CONFLICT: {"model": ExceptionSchema}},
                    status_code=status.HTTP_201_CREATED,
                    )
-async def create_user(user: UserRequest, db: AsyncSession = Depends(db_session)) -> UserResponse :
+async def create_user(user: UserRequest, db: Session = Depends(db_session)) -> UserResponse :
     if created_user := await _create_user(user=user, db_session=db):
         return created_user
     raise HTTPException(

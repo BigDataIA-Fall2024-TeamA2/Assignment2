@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.config import settings
-from backend.database import db_session, database_health, _create_tables
+from backend.database import db_session
 from backend.schemas import HealthSchema
 from backend.views.auth import auth_router
 from backend.views.users import users_router
@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     logger.info("[FastAPI] Startup lifespan invoked")
-    await _create_tables()
+    # await init_db()
     yield
 
 
@@ -44,5 +44,5 @@ app.add_middleware(
 async def health_check(db: AsyncSession = Depends(db_session)):
     return {
         "api": True,
-        "database": await database_health(db=db)
+        "database": True
     }

@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from fastapi.params import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import Session
 from starlette import status
 
 from backend.database import db_session
@@ -16,7 +17,7 @@ auth_router = APIRouter(prefix="/auth")
     response_model=Token,
     responses={status.HTTP_401_UNAUTHORIZED: {"model": ExceptionSchema}}
 )
-async def token(credentials: Credentials, db: AsyncSession = Depends(db_session)) -> Token | HTTPException:
+async def token(credentials: Credentials, db: Session = Depends(db_session)) -> Token | HTTPException:
     if user := await authenticate_user(
             username=credentials.username,
             password=credentials.password,
@@ -31,7 +32,7 @@ async def token(credentials: Credentials, db: AsyncSession = Depends(db_session)
     response_model=Token,
     responses={status.HTTP_401_UNAUTHORIZED: {"model": ExceptionSchema}}
 )
-async def refresh_token(request: RefreshToken, db: AsyncSession = Depends(db_session)) -> Token | HTTPException:
+async def refresh_token(request: RefreshToken, db: Session = Depends(db_session)) -> Token | HTTPException:
     if new_tokens := await authenticate_refresh_token(
             token=request.refresh_token, db=db
     ):

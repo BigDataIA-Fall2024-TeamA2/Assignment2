@@ -14,7 +14,7 @@ class UserRequest(BaseModel):
 
 class UserCreateRequest(UserRequest):
     active: bool = True
-    pwd_modified_at: float = Field(default_factory=lambda: datetime.datetime.now())
+    password_timestamp: float = Field(default_factory=lambda: datetime.datetime.now())
 
     @model_validator(mode="after")
     def validator(cls, values: "UserCreateRequest") -> "UserCreateRequest":

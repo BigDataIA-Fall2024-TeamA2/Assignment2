@@ -5,18 +5,6 @@ from sqlalchemy import Column, String, Integer, func, TIMESTAMP, VARCHAR, DateTi
 from backend.database import Base
 
 
-# class PdfExtractions(Base):
-#     __tablename__ = 'pdf_extractions'
-#
-#     id = Column(Integer, primary_key=True)
-#     filename = Column(String(255), nullable=False)
-#     s3_bucket = Column(VARCHAR(63), nullable=False)
-#     s3_key = Column(VARCHAR(1024), nullable=False)
-#     s3_media_key = Column(VARCHAR(1024), nullable=True)
-#     extraction_status = Column(String(20), nullable=False)
-#     created_at = Column(TIMESTAMP(timezone=True), default=func.current_timestamp())
-#     updated_at = Column(TIMESTAMP(timezone=True), onupdate=func.current_timestamp(), default=func.current_timestamp())
-
 class PdfExtractions(Base):
     __tablename__ = 'pdf_extractions'
 
