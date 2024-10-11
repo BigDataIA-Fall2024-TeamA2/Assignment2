@@ -1,15 +1,13 @@
+# frontend/register.py
 import streamlit as st
-import asyncio
-from sqlalchemy.ext.asyncio import AsyncSession
-
-from backend.schemas.users import UserRequest, UserCreateRequest
-from backend.services.users import _create_user
-from backend.database import db_session as get_async_session
-from backend.utils import get_password_hash
-from backend.config import settings
+import requests
 from pydantic import ValidationError
+from backend.schemas.users import UserRequest
 
-async def register_user():
+BASE_URL = "http://localhost:8000"
+
+
+def register_user():
     st.subheader("Register")
 
     new_username = st.text_input("Username")
@@ -35,27 +33,23 @@ async def register_user():
             st.error(f"Validation error: {e}")
             return False
 
-        # Hash the password
-        hashed_password = get_password_hash(new_password)
+        # Make a POST request to the FastAPI endpoint
+        response = requests.post(f"{BASE_URL}/users/", json=user_request.dict())
 
-        # Convert to UserCreateRequest with hashed password
-        user_create_request = UserCreateRequest(
-            **user_request.model_dump(exclude={'password'}),
-            password=hashed_password
-        )
-
-        async for session in get_async_session():
-            user = await _create_user(user_create_request, session)
-            if user:
-                st.success("User registered successfully!")
-                return True
-            else:
-                st.error("Failed to register user. Username or email may already be in use.")
+        if response.status_code == 201:
+            st.success("User registered successfully!")
+            return True
+        elif response.status_code == 409:
+            st.error("Failed to register user. Username or email may already be in use.")
+        else:
+            st.error(f"Failed to register user. Error: {response.text}")
 
     return False
 
+
 def main():
-    asyncio.run(register_user())
+    register_user()
+
 
 if __name__ == "__main__":
     main()

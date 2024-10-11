@@ -1,18 +1,17 @@
 import streamlit as st
 
 def main():
-    st.title("GAIA OpenAI Model Evaluator")
+    st.title("PDF QUESTION ANSWERING APP")
 
     st.markdown("""
     <div style="background-color: rgba(255, 255, 255, 0.7); padding: 20px; border-radius: 10px;">
-        <h2 style="color: #1e3d59;">Welcome to the GAIA OpenAI Model Evaluator</h2>
+        <h2 style="color: #1e3d59;">Welcome to the PDF QUESTION ANSWERING APP</h2>
         <p>This tool allows you to:</p>
         <ul>
-            <li>Select a validation test case from the GAIA dataset</li>
-            <li>Evaluate the OpenAI model's performance</li>
-            <li>Compare the model's answers with expected answers</li>
-            <li>Modify annotator steps and re-evaluate the model</li>
-            <li>Provide feedback and generate reports with visualizations</li>
+            <li>This app uses appache airflow to show manage Text extraction which done using Pypdf and AWSTextExtract</li>
+            <li>User can ask question to PDF</li>
+            <li>Based on the extracted text user for the selected pdf file</li>
+            <li>User has to select the openai model</li>
         </ul>
     </div>
     """, unsafe_allow_html=True)
@@ -22,8 +21,13 @@ def main():
         <h3 style="color: #1e3d59;">Getting Started</h3>
         <p>Use the navigation sidebar to explore different functionalities:</p>
         <ol>
-            <li><strong>Test Case & Annotator Modification:</strong> Select and evaluate test cases</li>
-            <li><strong>Reports & Visualization:</strong> View performance reports and visualizations</li>
+            <li>Register a new user</li>
+            <li>Login with the registered user</li>
+             <li>After Login authentication user can access a pdf questioning page</li>
+            <li>User has to select a pdf required for their use</li>
+            <li>User has to select the text extraction method</li>
+            <li>User has to select the openai model</li>
+            <li>Ask question in the text window for their Use case</li>
         </ol>
     </div>
     """, unsafe_allow_html=True)

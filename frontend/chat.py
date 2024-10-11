@@ -1,77 +1,91 @@
 import streamlit as st
-import os
-import asyncio
-from backend.services.docs import _invoke_openai_api
-import PyPDF2
-from backend.utils import get_openai_client
-def get_pdf_files():
-    """
-    Function to get PDF files from a specific directory.
-    """
-    pdf_directory = "D:\Projects\Assignment2"  # Replace with your actual PDF directory path
-    pdf_files = [f for f in os.listdir(pdf_directory) if f.endswith('.pdf')]
-    return pdf_files
+import requests
+from backend.schemas.docs import DocsListResponse, DocSummarizationRequest, DocSummarizationResponse, QuestionAnswerRequest, QuestionAnswerResponse
+from frontend.login import get_auth_token, refresh_auth_token
 
+BASE_URL = "http://localhost:8000"
 
-def load_pdf_content(pdf_name):
-    """
-    Function to load PDF content using PyPDF2.
-    """
-    pdf_directory = "D:\Projects\Assignment2"  # Replace with your actual PDF directory path
-    pdf_path = os.path.join(pdf_directory, pdf_name)
+def get_pdf_files(token):
+    headers = {"Authorization": f"Bearer {token}"}
+    response = requests.get(f"{BASE_URL}/docs/", headers=headers)
+    if response.status_code == 200:
+        docs_list_response = DocsListResponse(**response.json())
+        return [doc.filename for doc in docs_list_response.docs]
+    else:
+        st.error("Failed to fetch PDF files")
+        return []
 
-    with open(pdf_path, 'rb') as file:
-        reader = PyPDF2.PdfReader(file)
-        text = ""
-        for page in reader.pages:
-            text += page.extract_text() if page.extract_text() else ''
-    return text
+def summarize_pdf(pdf_name, extraction_mechanism, token):
+    headers = {"Authorization": f"Bearer {token}"}
+    data = DocSummarizationRequest(doc_content=pdf_name).dict()
+    response = requests.post(f"{BASE_URL}/docs/summarization", json=data, headers=headers)
+    if response.status_code == 200:
+        summarization_response = DocSummarizationResponse(**response.json())
+        return summarization_response.summarized_doc
+    else:
+        st.error(f"Failed to summarize PDF: {response.status_code} - {response.text}")
+        return "Error: Unable to summarize PDF"
 
+def get_answer(pdf_name, question, model, token):
+    headers = {"Authorization": f"Bearer {token}"}
+    data = QuestionAnswerRequest(question=question, doc_content=pdf_name, model=model).dict()
+    response = requests.post(f"{BASE_URL}/docs/qa", json=data, headers=headers)
+    if response.status_code == 200:
+        qa_response = QuestionAnswerResponse(**response.json())
+        return qa_response.llm_response
+    else:
+        st.error(f"Failed to get answer: {response.status_code} - {response.text}")
+        return "Error: Unable to get answer"
 
 def main():
     st.title("PDF Question Answering App")
 
-    # Sidebar for PDF selection
-    st.sidebar.header("PDF Selection")
-    pdf_files = get_pdf_files()
-    selected_pdf = st.sidebar.selectbox("Choose a PDF", pdf_files)
+    # Check if user is logged in
+    if "access_token" in st.session_state:
+        token = st.session_state["access_token"]
 
-    # Selectbox for model selection
-    model_options = ["gpt-4o-2024-05-13", "gpt-4o-mini-2024-07-18"]
-    selected_model = st.selectbox("Select a Model", model_options, key="model_select")
+        # Sidebar for PDF selection
+        st.header("PDF Selection")
+        pdf_files = get_pdf_files(token)
+        selected_pdf = st.selectbox("Choose a PDF", pdf_files)
 
-    # Main area for content and user input
-    if selected_pdf:
-        st.write(f"Selected PDF: **{selected_pdf}**")
+        # Selectbox for model selection
+        model_options = ["gpt-4o-2024-05-13", "gpt-4o-mini-2024-07-18"]
+        selected_model = st.selectbox("Select a Model", model_options, key="model_select")
 
-        # Load PDF content
-        pdf_content = load_pdf_content(selected_pdf)
+        # Selectbox for extraction mechanism
+        extraction_methods = ["PyPDF2", "AWS Textract"]
+        selected_method = st.selectbox("Select Extraction Method", extraction_methods, key="extraction_method")
 
-        # Display a preview of the PDF content
-        st.subheader("PDF Content Preview")
-        st.text_area("PDF Content", pdf_content[:500] + "...", height=150, disabled=True)
+        # Main area for content and user input
+        if selected_pdf:
+            st.write(f"Selected PDF: **{selected_pdf}**")
 
-        # User input text area
-        st.subheader("Ask a Question")
-        user_question = st.text_area("Enter your question about the PDF:", height=100)
+            # Get PDF summary
+            summary = summarize_pdf(selected_pdf, selected_method, token)
 
-        if st.button("Get Answer"):
-            if user_question:
-                # Combine PDF content and user question
-                prompt = f"PDF Content: {pdf_content}\n\nUser Question: {user_question}"
+            # Display a preview of the PDF summary
+            st.subheader("PDF Summary")
+            st.text_area("Summary", summary[:500] + "...", height=150, disabled=True)
 
-                # Call OpenAI API
-                with st.spinner("Generating answer..."):
-                    answer = asyncio.run(
-                        _invoke_openai_api(get_openai_client, user_prompt=prompt, model=selected_model))
+            # User input text area
+            st.subheader("Ask a Question")
+            user_question = st.text_area("Enter your question about the PDF:", height=100)
 
-                st.subheader("Answer:")
-                st.write(answer)
-            else:
-                st.warning("Please enter a question.")
+            if st.button("Get Answer"):
+                if user_question:
+                    # Call QA endpoint
+                    with st.spinner("Generating answer..."):
+                        answer = get_answer(selected_pdf, user_question, selected_model, token)
+
+                    st.subheader("Answer:")
+                    st.write(answer)
+                else:
+                    st.warning("Please enter a question.")
+        else:
+            st.info("Please select a PDF file from the sidebar.")
     else:
-        st.info("Please select a PDF file from the sidebar.")
-
+        st.info("Please log in to access the app.")
 
 if __name__ == "__main__":
     main()
