@@ -1,7 +1,7 @@
 import streamlit as st
 import os
 import asyncio
-from backend.services.docs import _invoke_openai_api
+from backend.services.chat import _invoke_openai_api
 import PyPDF2
 from backend.utils import get_openai_client
 def get_pdf_files():

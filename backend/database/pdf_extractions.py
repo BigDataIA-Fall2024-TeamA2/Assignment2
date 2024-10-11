@@ -61,3 +61,12 @@ def get_pdf_extractions_by_mechanism(extraction_mechanism: str):
             .all()
         )
         return extractions
+
+def get_a_specific_pdf(filename: str, extraction_mechanism: str):
+    with db_session() as session:
+        extractions = (
+            session.query(PdfExtractionsModel)
+            .filter(PdfExtractionsModel.extraction_mechanism == extraction_mechanism, PdfExtractionsModel.filename == filename)
+            .all()
+        )
+        return extractions

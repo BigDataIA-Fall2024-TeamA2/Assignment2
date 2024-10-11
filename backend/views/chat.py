@@ -53,7 +53,7 @@ async def question_answer(
     return await ...
 
 
-@docs_router.get("/", response_model=DocsListResponse)
-async def fetch_all_documents(token: str = Depends(security_scheme)) -> DocsListResponse:
-    docs_list = await list_all_pdfs()
-    return DocsListResponse(docs=docs_list)
+# @docs_router.get("/", response_model=DocsListResponse)
+# async def fetch_all_documents(token: str = Depends(security_scheme)) -> DocsListResponse:
+#     docs_list = await list_all_pdfs()
+#     return DocsListResponse(docs=docs_list)

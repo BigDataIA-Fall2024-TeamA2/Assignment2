@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from pydantic import BaseModel
 
 
@@ -35,3 +37,13 @@ class CreateChatRequest(BaseModel):
 
 class ChatResponse(BaseModel):
     response: str
+
+class CompleteSingleDocResponse(SingleDocModel):
+    id: int 
+    filename: str
+    s3_bucket: str
+    source_file_key: str
+    extracted_file_key: str
+    extracted_media_key: str | None
+    extraction_status: str
+    extraction_mechanism: str
