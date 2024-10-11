@@ -2,6 +2,8 @@ import logging
 
 from openai import OpenAI, OpenAIError
 
+from backend.database.pdf_extractions import fetch_all_pdf_extractions
+from backend.schemas.docs import SingleDocModel
 
 logger = logging.getLogger(__name__)
 
@@ -26,3 +28,7 @@ async def _invoke_openai_api(openai_client: OpenAI, model: str, user_prompt: str
         return f"Error invoking OpenAI API: {err_msg}"
     return completion.choices[0].message.content
 
+
+async def list_all_pdfs():
+    pdf_list = fetch_all_pdf_extractions()
+    return [SingleDocModel(id=pdf[0], filename=pdf[1], extraction_mechanism=pdf[2]) for pdf in pdf_list]

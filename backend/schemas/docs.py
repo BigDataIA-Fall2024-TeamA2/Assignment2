@@ -17,3 +17,13 @@ class QuestionAnswerRequest(BaseModel):
 
 class QuestionAnswerResponse(BaseModel):
     llm_response: str
+
+
+class SingleDocModel(BaseModel):
+    id: int
+    filename: str
+    extraction_mechanism: str
+
+
+class DocsListResponse(BaseModel):
+    docs: list[SingleDocModel]
