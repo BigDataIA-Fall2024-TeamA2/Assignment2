@@ -1,9 +1,7 @@
 import os
-import time
-
 import requests
 from bs4 import BeautifulSoup
-
+import time
 
 def get_pdf_file_links(url):
     max_retries = 3
@@ -21,13 +19,9 @@ def get_pdf_file_links(url):
 
     print(f"Getting links from {url}")
     soup = BeautifulSoup(response.text, "html.parser")
-    file_links = [
-        link.get("href").split("/")[-1]
-        for link in soup.find_all("a")
-        if link.get("href") and link.get("href").endswith(".pdf")
-    ]
+    file_links = [link.get("href").split("/")[-1] for link in soup.find_all("a") 
+                  if link.get("href") and link.get("href").endswith('.pdf')]
     return file_links
-
 
 def download_file(file_url, file_path):
     max_retries = 3
@@ -47,7 +41,6 @@ def download_file(file_url, file_path):
                 time.sleep(2)  # Wait before retrying
     return False
 
-
 def download_files(file_links, raw_base_url, download_dir):
     if not file_links:
         print("No PDF files found to download.")
@@ -59,14 +52,11 @@ def download_files(file_links, raw_base_url, download_dir):
         print(f"Attempting to download {file_url}...")
         download_file(file_url, file_path)
 
-
 def pdf_downloader_main():
     github_base = "https://github.com/aymeric-roucher/GAIA"
     test_base_url = f"{github_base}/tree/main/data/gaia/test"
     validation_base_url = f"{github_base}/tree/main/data/gaia/validation"
-    raw_github_base = (
-        "https://raw.githubusercontent.com/aymeric-roucher/GAIA/main/data/gaia"
-    )
+    raw_github_base = "https://raw.githubusercontent.com/aymeric-roucher/GAIA/main/data/gaia"
 
     download_dir = "/tmp/resources/file_attachments"
     os.makedirs(download_dir, exist_ok=True)
@@ -84,7 +74,6 @@ def pdf_downloader_main():
     download_files(validation_pdf_links, f"{raw_github_base}/validation/", download_dir)
 
     print("Download process completed.")
-
 
 if __name__ == "__main__":
     pdf_downloader_main()

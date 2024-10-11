@@ -1,11 +1,10 @@
 from datetime import datetime
 
 from sqlalchemy import Column, String, Integer, DateTime
+from sqlalchemy.orm import declarative_base
+from db import db_session
 
-from backend.database import Base
-from backend.database import db_session
-
-
+Base = declarative_base()
 class PdfExtractionsModel(Base):
     __tablename__ = "pdf_extractions"
 
