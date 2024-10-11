@@ -1,12 +1,15 @@
 
 
-import boto3
 import time
-from botocore.exceptions import NoCredentialsError, ClientError, ParamValidationError
 from io import BytesIO
+
+import boto3
 from PyPDF2 import PdfReader
+
 from pdf_extractions import create_pdf_extraction
- # Import the existing database function
+
+
+# Import the existing database function
 
 def extract_text_using_textract_async(file_key, bucket_name):
     aws_region = boto3.Session().region_name or 'us-east-1'

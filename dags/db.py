@@ -1,11 +1,9 @@
 import logging
+import os
 from contextlib import contextmanager
 
 from sqlalchemy import create_engine
-
 from sqlalchemy.orm import scoped_session, sessionmaker, Session
-import os
-
 
 logger = logging.getLogger(__name__)
 

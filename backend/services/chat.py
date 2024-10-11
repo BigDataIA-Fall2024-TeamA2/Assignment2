@@ -2,21 +2,24 @@ import logging
 
 from openai import OpenAI, OpenAIError
 
+from backend.database.chat_history import create_db_chat_history
 from backend.database.chat_session import create_db_chat_session, get_chat_session
-from backend.database.pdf_extractions import fetch_all_pdf_extractions, get_a_specific_pdf, PdfExtractionsModel
-from backend.schemas.chat import SingleDocModel, CompleteSingleDocResponse, ChatIdResponse
+from backend.database.pdf_extractions import fetch_all_pdf_extractions, get_a_specific_pdf, get_a_specific_pdf_by_id
+from backend.schemas.chat import SingleDocModel, CompleteSingleDocResponse, ChatIdResponse, QuestionAnswerResponse, \
+    ChatSessionResponse
+from backend.utils import load_file_contents
 
 logger = logging.getLogger(__name__)
 
 
-async def _invoke_openai_api(openai_client: OpenAI, model: str, user_prompt: str):
+async def _invoke_openai_api(openai_client: OpenAI, model: str, user_prompt: str, system_prompt: str):
     try:
         completion = openai_client.chat.completions.create(
             model=model,
             messages=[
                 {
                     "role": "system",
-                    "content": """You are an assistant designed to provide clear and accurate answers based on the information in the user's prompt. Use your knowledge to reason through the query and offer concise, relevant, and well-explained responses.""",
+                    "content": system_prompt,
                 },
                 {"role": "user", "content": user_prompt},
             ],
@@ -60,6 +63,25 @@ async def create_chat_session(filename, extraction_mechanism, user_id) -> ChatId
     return None
 
 
-async def create_chat_history(chat_id: int, question: str):
+async def create_chat_history(chat_id: int, question: str, openai_client: OpenAI, model: str):
+    file_contents = await get_file_contents_from_fs(chat_id)
+
+    system_prompt = f"You are given the following text extracted from a document. Use this text as the only reference to answer the question provided. Do not rely on external information. Answer clearly and concisely.\n\nExtracted Text: {file_contents}"
+    user_prompt = f"Question: {question}"
+    response = await _invoke_openai_api(openai_client, model, user_prompt, system_prompt)
+
+    create_db_chat_history(chat_id, question, response)
+    return QuestionAnswerResponse(llm_response=response)
+
+
+async def get_file_contents_from_fs(chat_id):
     chat_session_obj = get_chat_session(chat_id)
-    ...
+    file_obj = get_a_specific_pdf_by_id(chat_session_obj.pdf_extractions_id)
+    file_contents = load_file_contents(file_obj.extracted_file_key)
+    return file_contents
+
+
+async def get_chat_session_obj(chat_id: int):
+    chat_session = get_chat_session(chat_id)
+    file_obj = get_a_specific_pdf_by_id(chat_session.pdf_extractions_id)
+    return ChatSessionResponse(chat_id=chat_id, filename=file_obj.filename)

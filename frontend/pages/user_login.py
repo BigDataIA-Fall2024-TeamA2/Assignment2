@@ -1,5 +1,5 @@
-import streamlit as st
 import requests
+import streamlit as st
 
 from frontend.config import settings
 from frontend.utils.auth import set_tokens

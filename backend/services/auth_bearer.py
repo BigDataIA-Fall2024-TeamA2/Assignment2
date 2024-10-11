@@ -1,7 +1,7 @@
 from typing import Annotated
 
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from fastapi import Request, HTTPException, Depends
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
 from backend.services.auth import decode_token
 

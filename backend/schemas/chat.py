@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from pydantic import BaseModel
 
 
@@ -13,9 +11,7 @@ class DocSummarizationResponse(BaseModel):
 
 class QuestionAnswerRequest(BaseModel):
     question: str
-    doc_content: str
     model: str
-
 
 class QuestionAnswerResponse(BaseModel):
     llm_response: str
@@ -40,6 +36,11 @@ class ChatIdResponse(BaseModel):
     chat_id: int
 
 
+class ChatSessionResponse(BaseModel):
+    chat_id: int
+    filename: str
+
+
 class CompleteSingleDocResponse(SingleDocModel):
     id: int 
     filename: str
@@ -49,3 +50,8 @@ class CompleteSingleDocResponse(SingleDocModel):
     extracted_media_key: str | None
     extraction_status: str
     extraction_mechanism: str
+
+class ChatFileContentResponse(BaseModel):
+    file_contents: str
+
+

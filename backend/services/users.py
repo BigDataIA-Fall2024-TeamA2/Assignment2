@@ -4,7 +4,7 @@ from sqlalchemy.exc import IntegrityError
 
 from backend.database import db_session
 from backend.database.users import UserModel
-from backend.schemas.users import UserRequest, UserCreateRequest, UserResponse
+from backend.schemas.users import UserRequest, UserCreateRequest
 
 logger = logging.getLogger(__name__)
 

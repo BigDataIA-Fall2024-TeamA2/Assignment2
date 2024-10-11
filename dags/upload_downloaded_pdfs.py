@@ -1,6 +1,8 @@
-import boto3
 import os
+
+import boto3
 from botocore.exceptions import NoCredentialsError
+
 
 def upload_files_to_s3(local_dir, bucket_name, s3_prefix=''):
     """

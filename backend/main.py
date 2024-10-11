@@ -9,9 +9,6 @@ from backend.config import settings
 from backend.database import db_session
 from backend.schemas import HealthSchema
 from backend.views import central_router
-from backend.views.auth import auth_router
-from backend.views.chat import docs_router
-from backend.views.users import users_router
 
 # Load logging configuration from file
 logging.config.fileConfig("backend/logging.conf", disable_existing_loggers=False)

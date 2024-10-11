@@ -1,7 +1,9 @@
 import os
+import time
+
 import requests
 from bs4 import BeautifulSoup
-import time
+
 
 def get_pdf_file_links(url):
     max_retries = 3

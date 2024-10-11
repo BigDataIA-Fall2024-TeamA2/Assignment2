@@ -49,7 +49,7 @@ def fetch_all_pdf_extractions():
     with db_session() as session:
         extractions = session.query(
             PdfExtractionsModel.id, PdfExtractionsModel.filename, PdfExtractionsModel.extraction_mechanism
-        ).all()
+        ).order_by(PdfExtractionsModel.id).all()
         return extractions
 
 
@@ -70,3 +70,8 @@ def get_a_specific_pdf(filename: str, extraction_mechanism: str):
             .all()
         )
         return extractions
+
+
+def get_a_specific_pdf_by_id(file_id: int) -> PdfExtractionsModel:
+    with db_session() as session:
+        return session.query(PdfExtractionsModel).filter(PdfExtractionsModel.id == file_id).first()

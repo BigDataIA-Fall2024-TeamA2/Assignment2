@@ -1,6 +1,6 @@
 import streamlit as st
 from dotenv import load_dotenv
-from frontend.pages import _bkp_chat, user_creation, home, user_login
+
 from frontend.pages.chat import qa_interface
 from frontend.pages.user_creation import create_user
 from frontend.pages.user_login import login
@@ -72,8 +72,8 @@ if st.session_state.logged_in:
         })
 else:
     pg = st.navigation({
-        "User Creation": [user_creation_page],
         "User Login": [login_page],
+        "User Creation": [user_creation_page],
     })
 
 pg.run()

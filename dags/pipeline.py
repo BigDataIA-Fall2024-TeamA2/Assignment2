@@ -1,10 +1,12 @@
 # dags/gaia_text_extraction.py
 
+from datetime import datetime
+
 from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
-from datetime import datetime
-from pdf_downloader import pdf_downloader_main
+
 from extract import process_pdfs
+from pdf_downloader import pdf_downloader_main
 from upload_downloaded_pdfs import main_uploader
 
 # Base URLs and download directory

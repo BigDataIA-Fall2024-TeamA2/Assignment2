@@ -1,5 +1,3 @@
-from random import choice
-
 from fastapi import APIRouter, Depends
 
 from backend.schemas.chat import DocsListResponse, CompleteSingleDocResponse

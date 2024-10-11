@@ -1,7 +1,7 @@
 import logging
 from datetime import datetime
 
-from sqlalchemy import Boolean, Column, String, Integer, DateTime, Float
+from sqlalchemy import Boolean, Column, String, Integer, DateTime
 
 from backend.database import Base
 

@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import Column, Integer, String, DateTime
+from sqlalchemy import Column, Integer, DateTime
 
 from backend.database import Base, db_session
 
@@ -26,6 +26,6 @@ def create_db_chat_session(user_id, pdf_extractions_id):
         return _chat_session
 
 
-def get_chat_session(chat_id):
+def get_chat_session(chat_id) -> ChatSession:
     with db_session() as session:
-        return session.query(ChatSession).filter_by(chat_id=chat_id).first()
+        return session.query(ChatSession).filter(ChatSession.chat_id == chat_id).first()

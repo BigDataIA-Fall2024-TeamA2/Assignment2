@@ -8,7 +8,8 @@ from backend.database import Base, db_session
 class ChatHistory(Base):
     __tablename__ = 'chat_history'
 
-    chat_id = Column(name="id", type_=Integer)
+    chat_history_id = Column(name="id", type_=Integer, primary_key=True, autoincrement=True)
+    chat_id = Column(name="chat_id", type_=Integer)
     question = Column(name="question", type_=String)
     answer = Column(name="answer", type_=String)
     created_at = Column(name="created_at", type_=DateTime, default=datetime.now)
@@ -17,7 +18,9 @@ class ChatHistory(Base):
 def create_db_chat_history(chat_id: int, question: str, answer: str):
     with db_session() as session:
         _chat_history = ChatHistory(
-            chat_id, question, answer
+            chat_id=chat_id,
+            question=question,
+            answer=answer,
         )
         session.add(_chat_history)
         session.commit()
