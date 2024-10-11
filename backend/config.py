@@ -31,6 +31,12 @@ class Settings(BaseSettings, extra="ignore"):
     APP_TITLE: str = "QA & Summarization Interface"
     APP_VERSION: str = "0.1"
 
+    # AWS
+    AWS_ACCESS_KEY_ID: str
+    AWS_SECRET_ACCESS_KEY: str
+    AWS_REGION: str
+    AWS_S3_BUCKET: str
+
     model_config = SettingsConfigDict(env_file=".env")
 
     @model_validator(mode="after")

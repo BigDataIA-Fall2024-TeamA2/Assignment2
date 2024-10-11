@@ -10,17 +10,14 @@ from backend.schemas.chat import (
     QuestionAnswerResponse,
     QuestionAnswerRequest,
     DocsListResponse,
-    ChatResponse,
-    CreateChatRequest,
+    CreateChatRequest, ChatIdResponse,
 )
-from backend.services.auth_bearer import JWTBearer
-from backend.services.chat import list_all_pdfs
+from backend.services.auth_bearer import JWTBearer, get_current_user_id
+from backend.services.chat import list_all_pdfs, create_chat_session
 from backend.utils import get_openai_client
+from backend.views.choices import security_scheme
 
 docs_router = APIRouter(prefix="/chat", tags=["chat"])
-
-security_scheme = JWTBearer()
-
 
 @docs_router.post(
     "/summarization",
@@ -35,8 +32,9 @@ async def summarize_document(
     return await ...
 
 
-@docs_router.post("/initialize", response_model=ChatResponse)
-async def create_chat(request: CreateChatRequest, token: str = Depends(security_scheme)): ...
+@docs_router.post("/initiate", response_model=ChatIdResponse)
+async def create_chat(request: CreateChatRequest, user_id: int = Depends(get_current_user_id)) -> ChatIdResponse:
+    return await create_chat_session(request.filename, request.extraction_mechanism, user_id)
 
 
 @docs_router.post(
@@ -45,10 +43,10 @@ async def create_chat(request: CreateChatRequest, token: str = Depends(security_
     responses={status.HTTP_401_UNAUTHORIZED: {"model": ExceptionSchema}},
 )
 async def question_answer(
-    chat_id: str,
+    chat_id: int,
     request: QuestionAnswerRequest,
     openai_client: OpenAI = Depends(get_openai_client),
-    token: str = Depends(security_scheme),
+    user_id: int = Depends(get_current_user_id)
 ) -> QuestionAnswerResponse:
     return await ...
 
@@ -57,3 +55,12 @@ async def question_answer(
 # async def fetch_all_documents(token: str = Depends(security_scheme)) -> DocsListResponse:
 #     docs_list = await list_all_pdfs()
 #     return DocsListResponse(docs=docs_list)
+
+
+@docs_router.get(
+    "/file-content",
+    response_model=""
+)
+async def get_file_content(filename: str, extraction_mechanism: str):
+    ...
+

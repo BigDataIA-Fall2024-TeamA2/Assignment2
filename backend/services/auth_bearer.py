@@ -1,5 +1,7 @@
+from typing import Annotated
+
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from fastapi import Request, HTTPException
+from fastapi import Request, HTTPException, Depends
 
 from backend.services.auth import decode_token
 
@@ -7,6 +9,7 @@ from backend.services.auth import decode_token
 async def verify_jwt(token: str) -> bool:
     decoded_token = await decode_token(token)
     return True if decoded_token else False
+
 
 
 class JWTBearer(HTTPBearer):
@@ -23,3 +26,10 @@ class JWTBearer(HTTPBearer):
             return credentials.credentials
         else:
             raise HTTPException(status_code=403, detail="Invalid authorization code")
+
+security_scheme = JWTBearer()
+
+
+async def get_current_user_id(token: Annotated[str, Depends(security_scheme)]) -> int:
+    decoded_token = await decode_token(token)
+    return decoded_token["user_id"]

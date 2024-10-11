@@ -2,8 +2,9 @@ import logging
 
 from openai import OpenAI, OpenAIError
 
+from backend.database.chat_session import create_db_chat_session, get_chat_session
 from backend.database.pdf_extractions import fetch_all_pdf_extractions, get_a_specific_pdf, PdfExtractionsModel
-from backend.schemas.chat import SingleDocModel, CompleteSingleDocResponse
+from backend.schemas.chat import SingleDocModel, CompleteSingleDocResponse, ChatIdResponse
 
 logger = logging.getLogger(__name__)
 
@@ -32,7 +33,7 @@ async def list_all_pdfs():
     return [SingleDocModel(id=pdf[0], filename=pdf[1], extraction_mechanism=pdf[2]) for pdf in pdf_list]
 
 
-async def get_specific_pdf(filename: str, extraction_mechanism: str):
+async def get_specific_pdf(filename: str, extraction_mechanism: str) -> CompleteSingleDocResponse | None:
     filtered_results = get_a_specific_pdf(filename, extraction_mechanism)
     if len(filtered_results) > 0:
         pdf_extraction = filtered_results[0]
@@ -47,3 +48,18 @@ async def get_specific_pdf(filename: str, extraction_mechanism: str):
             extraction_mechanism=pdf_extraction.extraction_mechanism,
         )
     return None
+
+
+async def create_chat_session(filename, extraction_mechanism, user_id) -> ChatIdResponse | None:
+    file_obj = await get_specific_pdf(filename, extraction_mechanism)
+
+
+    if file_obj is not None:
+        new_chat_session = create_db_chat_session(user_id, file_obj.id)
+        return ChatIdResponse(chat_id=new_chat_session.chat_id)
+    return None
+
+
+async def create_chat_history(chat_id: int, question: str):
+    chat_session_obj = get_chat_session(chat_id)
+    ...

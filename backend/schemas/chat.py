@@ -33,10 +33,12 @@ class DocsListResponse(BaseModel):
 
 class CreateChatRequest(BaseModel):
     openai_model: str
+    filename: str
+    extraction_mechanism: str
 
+class ChatIdResponse(BaseModel):
+    chat_id: int
 
-class ChatResponse(BaseModel):
-    response: str
 
 class CompleteSingleDocResponse(SingleDocModel):
     id: int 
