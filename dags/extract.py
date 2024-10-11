@@ -102,6 +102,7 @@ def extract_text_using_pypdf(file_key, bucket_name):
     return None
 
 def process_s3_pdfs(bucket_name, folder_name):
+   
     s3 = boto3.client('s3')
     
     try:
