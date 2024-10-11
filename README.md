@@ -6,9 +6,9 @@ This application is a Retrieval-Augmented Generation (RAG)-based system where us
 
 Links to Resources:
 1. [CodeLabs Link](https://codelabs-preview.appspot.com/?file_id=1WFuc5ShwnSdNSBE-l3amYXxE4B6U5xpitCTYttudxMI#0)
-2. [Deployed Streamlit Frontend](https://damg7245-a2-assign1.streamlit.app/)
-3. [Deployed FastAPI Backend](https://damg7245-a2-assign1.streamlit.app/)
-4. [Demo Video](video/video.mp4)
+2. [Deployed Streamlit Frontend](http://98.81.209.60:8501/)
+3. [Deployed FastAPI Backend](http://98.81.209.60:8000/docs/)
+4. [Demo Video](video/video.mov)
   
 
 ## Frontend (Streamlit):
@@ -71,59 +71,67 @@ docker compose up -d
 .
 ├── README.md
 ├── app.py
+├── architecture
+│   ├── Airflow_pipeline.drawio
+│   ├── Airflow_pipeline.png
+│   ├── StreamlitApp.drawio
+│   └── StreamlitApp.png
 ├── backend
-│   ├── __init__.py
-│   ├── config.py
-│   ├── database
-│   │   ├── __init__.py
-│   │   ├── chat_history.py
-│   │   ├── chat_session.py
-│   │   ├── pdf_extractions.py
-│   │   └── users.py
-│   ├── logging.conf
-│   ├── main.py
-│   ├── schemas
-│   │   ├── __init__.py
-│   │   ├── auth.py
-│   │   ├── chat.py
-│   │   ├── choices.py
-│   │   └── users.py
-│   ├── services
-│   │   ├── __init__.py
-│   │   ├── auth.py
-│   │   ├── auth_bearer.py
-│   │   ├── chat.py
-│   │   └── users.py
-│   ├── utils.py
-│   └── views
-│   ├── __init__.py
-│   ├── auth.py
-│   ├── chat.py
-│   ├── choices.py
-│   └── users.py
+│   ├── __init__.py
+│   ├── config.py
+│   ├── database
+│   │   ├── __init__.py
+│   │   ├── chat_history.py
+│   │   ├── chat_session.py
+│   │   ├── pdf_extractions.py
+│   │   └── users.py
+│   ├── logging.conf
+│   ├── main.py
+│   ├── schemas
+│   │   ├── __init__.py
+│   │   ├── auth.py
+│   │   ├── chat.py
+│   │   ├── choices.py
+│   │   └── users.py
+│   ├── services
+│   │   ├── __init__.py
+│   │   ├── auth.py
+│   │   ├── auth_bearer.py
+│   │   ├── chat.py
+│   │   └── users.py
+│   ├── utils.py
+│   └── views
+│       ├── __init__.py
+│       ├── auth.py
+│       ├── chat.py
+│       ├── choices.py
+│       └── users.py
+├── backend.Dockerfile
 ├── dags
-│   ├── db.py
-│   ├── extract.py
-│   ├── pdf_downloader.py
-│   ├── pdf_extractions.py
-│   ├── pipeline.py
-│   └── upload_downloaded_pdfs.py
-├── docker-compose.yaml
+│   ├── db.py
+│   ├── extract.py
+│   ├── pdf_downloader.py
+│   ├── pdf_extractions.py
+│   ├── pipeline.py
+│   └── upload_downloaded_pdfs.py
+├── docker-compose-airflow.yaml
+├── docker-compose-app.yaml
 ├── frontend
-│   ├── __init__.py
-│   ├── config.py
-│   ├── pages
-│   │   ├── __init__.py
-│   │   ├── _bkp_chat.py
-│   │   ├── chat.py
-│   │   ├── home.py
-│   │   ├── user_creation.py
-│   │   └── user_login.py
-│   └── utils
-│   ├── __init__.py
-│   ├── auth.py
-│   ├── chat.py
-│   └── fs_utils.py
+│   ├── __init__.py
+│   ├── config.py
+│   ├── pages
+│   │   ├── __init__.py
+│   │   ├── chat.py
+│   │   ├── user_creation.py
+│   │   └── user_login.py
+│   └── utils
+│       ├── __init__.py
+│       ├── auth.py
+│       └── chat.py
+├── frontend.Dockerfile
 ├── pyproject.toml
-└── requirements.txt
+├── requirements.txt
+└── video
+    └── video.mov
+
 ```
