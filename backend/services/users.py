@@ -1,24 +1,24 @@
 import logging
 
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import Session
 
-from backend.database.users import User
+from backend.database import db_session
+from backend.database.users import UserModel
 from backend.schemas.users import UserRequest, UserCreateRequest, UserResponse
 
 logger = logging.getLogger(__name__)
 
 
-async def _create_user(user: UserRequest, db_session: Session) -> UserResponse | None:
+async def _create_user(user: UserRequest) -> UserModel | None:
     try:
-        user = User(**UserCreateRequest(**user.model_dump()).model_dump())
-        db_session.add(user)
-        db_session.commit()
-        db_session.refresh(user)
-        return user
+        with db_session() as session:
+            _user = UserModel(**UserCreateRequest(**user.model_dump()).model_dump())
+            session.add(_user)
+            session.commit()
+            session.refresh(_user)
+            return _user
     except IntegrityError as ie:
-        logger.error(f"User creation failed with error {ie}")
+        logger.error(f"UserModel creation failed with error {ie}")
     except Exception as e:
         logger.exception(e)
     return None

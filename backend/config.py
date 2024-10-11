@@ -35,7 +35,7 @@ class Settings(BaseSettings, extra="ignore"):
 
     @model_validator(mode="after")
     def validator(cls, values: "Settings") -> "Settings":
-        values.POSTGRES_URI = f"postgresql+asyncpg://{values.POSTGRES_USER}:{values.POSTGRES_PASSWORD}@{values.POSTGRES_HOSTNAME}:{values.POSTGRES_PORT}/{values.POSTGRES_DB}"
+        values.POSTGRES_URI = f"postgresql://{values.POSTGRES_USER}:{values.POSTGRES_PASSWORD}@{values.POSTGRES_HOSTNAME}:{values.POSTGRES_PORT}/{values.POSTGRES_DB}"
         return values
 
 

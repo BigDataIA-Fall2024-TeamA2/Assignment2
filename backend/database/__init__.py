@@ -2,18 +2,18 @@ import logging
 from contextlib import contextmanager
 
 from sqlalchemy import create_engine
+from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy.orm import scoped_session, sessionmaker, Session
 
 from backend.config import settings
 
-
 logger = logging.getLogger(__name__)
 
-from sqlalchemy.orm import DeclarativeBase
 
 class Base(DeclarativeBase):
     # https://docs.sqlalchemy.org/en/14/orm/extensions/asyncio.html#preventing-implicit-io-when-using-asyncsession
     __mapper_args__ = {"eager_defaults": True}
+
 
 class DatabaseSession:
     _instance = None

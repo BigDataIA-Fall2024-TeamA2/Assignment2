@@ -1,4 +1,5 @@
-import datetime
+from datetime import datetime
+from time import time
 
 from pydantic import BaseModel, EmailStr, Field, model_validator
 
@@ -14,12 +15,12 @@ class UserRequest(BaseModel):
 
 class UserCreateRequest(UserRequest):
     active: bool = True
-    password_timestamp: float = Field(default_factory=lambda: datetime.datetime.now())
+    password_timestamp: datetime = Field(default_factory=lambda: int(time()))
 
     @model_validator(mode="after")
-    def validator(cls, values: "UserCreateRequest") -> "UserCreateRequest":
-        values.password = get_password_hash(values.password)
-        return values
+    def validator(self) -> "UserCreateRequest":
+        self.password = get_password_hash(self.password)
+        return self
 
 
 class UserResponse(BaseModel):
@@ -27,5 +28,5 @@ class UserResponse(BaseModel):
     email: str
     full_name: str
     active: bool
-    created_at: datetime.datetime
-    modified_at: datetime.datetime
+    created_at: datetime
+    modified_at: datetime
