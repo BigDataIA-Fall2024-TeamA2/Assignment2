@@ -52,9 +52,7 @@ def main_uploader():
             print(f"Error: Directory {local_directory} does not exist.")
             continue
 
-        print(
-            f"Starting upload from {local_directory} to S3 bucket {bucket_name}/{s3_prefix}"
-        )
+        print(f"Starting upload from {local_directory} to S3 bucket {bucket_name}/{s3_prefix}")
 
         success = upload_files_to_s3(local_directory, bucket_name, s3_prefix)
 

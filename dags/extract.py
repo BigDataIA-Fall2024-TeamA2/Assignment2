@@ -4,6 +4,8 @@ import PyPDF2
 import boto3
 from botocore.exceptions import NoCredentialsError, ClientError
 
+from backend.database.pdf_extractions import create_pdf_extraction
+
 # Directory containing PDFs
 pdf_directory = "/tmp/resources/file_attachments/"
 # Directory to save extracted text files
@@ -40,6 +42,7 @@ def extract_text_using_textract_local(pdf_path):
         for block in blocks:
             if block["BlockType"] == "LINE":
                 text += block["Text"] + "\n"
+        create_pdf_extraction(...)
         return text
     except NoCredentialsError as e:
         print(e)

@@ -9,7 +9,7 @@ from backend.config import settings
 from backend.database import db_session
 from backend.schemas import HealthSchema
 from backend.views.auth import auth_router
-from backend.views.docs import docs_router
+from backend.views.chat import docs_router
 from backend.views.users import users_router
 
 # Load logging configuration from file
@@ -35,11 +35,7 @@ app.include_router(docs_router)
 origins = ["*"]
 
 app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    CORSMiddleware, allow_origins=origins, allow_credentials=True, allow_methods=["*"], allow_headers=["*"]
 )
 
 

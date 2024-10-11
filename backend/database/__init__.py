@@ -24,9 +24,7 @@ class DatabaseSession:
             cls._instance = super().__new__(cls)
             cls._instance.db_engine = create_engine(settings.POSTGRES_URI)
             cls._instance.session_maker = scoped_session(
-                sessionmaker(
-                    autocommit=False, autoflush=True, bind=cls._instance.db_engine
-                )
+                sessionmaker(autocommit=False, autoflush=True, bind=cls._instance.db_engine)
             )
         return cls._instance
 

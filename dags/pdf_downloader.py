@@ -64,9 +64,7 @@ def pdf_downloader_main():
     github_base = "https://github.com/aymeric-roucher/GAIA"
     test_base_url = f"{github_base}/tree/main/data/gaia/test"
     validation_base_url = f"{github_base}/tree/main/data/gaia/validation"
-    raw_github_base = (
-        "https://raw.githubusercontent.com/aymeric-roucher/GAIA/main/data/gaia"
-    )
+    raw_github_base = "https://raw.githubusercontent.com/aymeric-roucher/GAIA/main/data/gaia"
 
     download_dir = "/tmp/resources/file_attachments"
     os.makedirs(download_dir, exist_ok=True)

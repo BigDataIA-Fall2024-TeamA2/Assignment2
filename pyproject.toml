@@ -4,3 +4,23 @@ version = "0.1.0"
 description = ""
 authors = ["Gopi Krishna <gopigof@gmail.com>"]
 readme = "README.md"
+
+
+[tool.black]
+line-length = 120
+target-version = ['py312']
+skip-string-normalization = true
+skip-magic-trailing-comma = true
+exclude = '''
+/(
+    \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | buck-out
+  | build
+  | dist
+)/
+'''

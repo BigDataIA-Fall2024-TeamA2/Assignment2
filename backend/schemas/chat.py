@@ -27,3 +27,11 @@ class SingleDocModel(BaseModel):
 
 class DocsListResponse(BaseModel):
     docs: list[SingleDocModel]
+
+
+class CreateChatRequest(BaseModel):
+    openai_model: str
+
+
+class ChatResponse(BaseModel):
+    response: str
