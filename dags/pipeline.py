@@ -24,18 +24,20 @@ with DAG('gaia_text_extraction', default_args=default_args) as dag:
         dag=dag,
     )
 
+
+    upload_task = PythonOperator(
+        task_id='upload_pdfs',
+        python_callable= main_uploader,
+        dag=dag,
+    )
+
+
     process_task = PythonOperator(
         task_id='process_pdfs',
         python_callable=process_pdfs,
         op_kwargs={
             'pdf_directory': download_dir,
         },
-        dag=dag,
-    )
-
-    upload_task = PythonOperator(
-        task_id='upload_pdfs',
-        python_callable= main_uploader,
         dag=dag,
     )
 

@@ -1,6 +1,9 @@
 import streamlit as st
 from dotenv import load_dotenv
-from frontend import home, login, register, chat
+from frontend.pages import _bkp_chat, user_creation, home, user_login
+from frontend.pages.chat import qa_interface
+from frontend.pages.user_creation import create_user
+from frontend.pages.user_login import login
 
 # Load environment variables from .env file
 load_dotenv()
@@ -35,19 +38,42 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-PAGES = {
-    "Home": home,
-    "Login": login,
-    "Register": register,
-    "Chat": chat
-}
+# PAGES = {
+#     "Home": home,
+#     "Login": login,
+#     "Register": None,
+#     "Chat": chat
+# }
+#
+# st.sidebar.title("Navigation")
+# selection = st.sidebar.selectbox("Go to", list(PAGES.keys()))
+#
+# page = PAGES[selection]
+# page.main()  # Changed from page.app() to page.main()
 
-def main():
-    st.sidebar.title("Navigation")
-    selection = st.sidebar.selectbox("Go to", list(PAGES.keys()))
+if "logged_in" not in st.session_state:
+    st.session_state.logged_in = False
 
-    page = PAGES[selection]
-    page.main()  # Changed from page.app() to page.main()
+def logout():
+    if st.button("Logout"):
+        st.session_state.logged_in = False
+        st.rerun()
 
-if __name__ == "__main__":
-    main()
+login_page = st.Page(login, title="User Login", icon=":material/login:")
+logout_page = st.Page(logout, title="Log Out", icon=":material/logout:")
+user_creation_page = st.Page(create_user, title="User Registration", default=True)
+qa_page = st.Page(qa_interface, title="Question Answering", icon=":material/chat:")
+
+
+if st.session_state.logged_in:
+    pg = st.navigation({
+            "Question Answering Interface": [qa_page],
+            "Logout": [logout_page]
+        })
+else:
+    pg = st.navigation({
+        "User Creation": [user_creation_page],
+        "User Login": [login_page],
+    })
+
+pg.run()

@@ -8,8 +8,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from backend.config import settings
 from backend.database import db_session
 from backend.schemas import HealthSchema
+from backend.views import central_router
 from backend.views.auth import auth_router
-from backend.views.docs import docs_router
+from backend.views.chat import docs_router
 from backend.views.users import users_router
 
 # Load logging configuration from file
@@ -28,18 +29,12 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title=settings.APP_TITLE, version=settings.APP_VERSION, lifespan=lifespan)
 
-app.include_router(auth_router)
-app.include_router(users_router)
-app.include_router(docs_router)
+app.include_router(central_router)
 
 origins = ["*"]
 
 app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    CORSMiddleware, allow_origins=origins, allow_credentials=True, allow_methods=["*"], allow_headers=["*"]
 )
 
 
