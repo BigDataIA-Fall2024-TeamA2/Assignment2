@@ -7,7 +7,6 @@ from openai import OpenAI
 from passlib.context import CryptContext
 
 from backend.config import settings
-from frontend.utils.fs_utils import LOCAL_EXTRACTS_DIRECTORY
 
 LOCAL_EXTRACTS_DIRECTORY = os.path.join("resources", "extracts")
 

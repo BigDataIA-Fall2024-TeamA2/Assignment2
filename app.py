@@ -10,7 +10,7 @@ load_dotenv()
 
 # Set page configuration
 st.set_page_config(
-    page_title="GAIA OpenAI Model Evaluator",
+    page_title="Question Answering Interface",
     layout="wide",
     initial_sidebar_state="expanded",
 )
@@ -59,9 +59,9 @@ def logout():
         st.session_state.logged_in = False
         st.rerun()
 
-login_page = st.Page(login, title="User Login", icon=":material/login:")
+login_page = st.Page(login, title="User Login", icon=":material/login:", default=True)
 logout_page = st.Page(logout, title="Log Out", icon=":material/logout:")
-user_creation_page = st.Page(create_user, title="User Registration", default=True)
+user_creation_page = st.Page(create_user, title="User Registration")
 qa_page = st.Page(qa_interface, title="Question Answering", icon=":material/chat:")
 
 
